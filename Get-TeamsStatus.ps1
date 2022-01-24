@@ -66,10 +66,7 @@ Get-Content -Path "C:\Users\$UserName\AppData\Roaming\Microsoft\Teams\logs.txt" 
 
     # Check if Teams is running and start monitoring the log if it is
     If ($null -ne $TeamsProcess) {
-        If($TeamsStatus -eq $null){ 
-			$Status = $lgOffline
-			Write-Host $Status
-		}
+        If($TeamsStatus -eq $null){ }
         ElseIf ($TeamsStatus -like "*Setting the taskbar overlay icon - $lgAvailable*" -or `
             $TeamsStatus -like "*StatusIndicatorStateService: Added Available*" -or `
             $TeamsStatus -like "*StatusIndicatorStateService: Added NewActivity (current state: Available -> NewActivity*") {
@@ -126,11 +123,7 @@ Get-Content -Path "C:\Users\$UserName\AppData\Roaming\Microsoft\Teams\logs.txt" 
             Write-Host $Status
         }
 
-        If($TeamsActivity -eq $null){ 
-			$Activity = $lgNotInACall
-			$ActivityIcon = $iconNotInACall
-			Write-Host $Activity
-		}
+        If($TeamsActivity -eq $null){ }
         ElseIf ($TeamsActivity -like "*Resuming daemon App updates*" -or `
             $TeamsActivity -like "*SfB:TeamsNoCall*" -or `
             $TeamsActivity -like "*name: desktop_call_state_change_send, isOngoing: false*") {
