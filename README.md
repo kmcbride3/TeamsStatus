@@ -20,12 +20,12 @@ sensor:
     sensors:
       teams_status: 
         friendly_name: "Microsoft Teams Status"
-        value_template: "{{states('input_text.teams_status')}}"
-        icon_template: "{{state_attr('input_text.teams_status','icon')}}"
+        value_template: "Available"
+        icon_template: "mdi:phone-off"
         unique_id: sensor.teams_status
       teams_activity:
         friendly_name: "Microsoft Teams Activity"
-        value_template: "{{states('input_text.teams_activity')}}"
+        value_template: "Not in a call"
         unique_id: sensor.teams_activity
 
 ```
