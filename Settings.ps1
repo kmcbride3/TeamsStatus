@@ -20,7 +20,6 @@ $lgInACall = "In a call"
 # Set icons to use for call activity
 $iconInACall = "mdi:phone-in-talk-outline"
 $iconNotInACall = "mdi:phone-off"
-$iconMonitoring = "mdi:api"
 
 # Set entities to post to
 $entityStatus = "sensor.teams_status"
