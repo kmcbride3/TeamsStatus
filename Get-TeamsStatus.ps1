@@ -27,7 +27,7 @@ Param($SetStatus)
 . ($PSScriptRoot + "\Settings.ps1")
 
 $headers = @{"Authorization"="Bearer $HAToken";}
-start-transcript C:\Scripts\log.txt
+
 # Run the script when a parameter is used and stop when done
 If($null -ne $SetStatus){
     Write-Host ("Setting Microsoft Teams status to "+$SetStatus+":")
@@ -52,7 +52,7 @@ Else {
 }
 
 # Start monitoring the Teams logfile when no parameter is used to run the script
-Get-Content -Path $path -Tail 1000 -ReadCount 0 -Wait | % {
+Get-Content -Path $path -Tail 1000 -ReadCount 0 -Encoding Utf8 -Wait | % {
     
     # Get Teams Logfile and last icon overlay status
     $TeamsStatus = $_ | Select-String -Pattern `
