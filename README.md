@@ -37,7 +37,6 @@ sensor:
   * Replace `<Insert token>` with the token you generated
   * Replace `<UserName>` with the username that is logged in to Teams and you want to monitor
   * Replace `<HA URL>` with the URL to your Home Assistant server
-  * Replace `<PCUserName>` with the local user name on the PC.
   * Adjust the language settings to your preferences
 * Start a elevated PowerShell prompt, browse to C:\Scripts\TeamsStatus and run the following command:
 ```powershell
