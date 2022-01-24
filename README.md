@@ -13,7 +13,7 @@ sensor.teams_status displays that availability status of your Teams client based
 This solution is created to work with Home Assistant. It will work with any home automation platform that provides an API, but you probably need to change the PowerShell code.
 
 # Requirements
-* Create the three Teams sensors in the Home Assistant configuration.yaml file
+* Create the two Teams sensors in the Home Assistant configuration.yaml file
 ```yaml
 sensor:
   - platform: template
