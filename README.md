@@ -15,43 +15,36 @@ This solution is created to work with Home Assistant. It will work with any home
 # Requirements
 * Create the three Teams sensors in the Home Assistant configuration.yaml file
 ```yaml
-input_text:
-  teams_status:
-    name: Microsoft Teams status
-    icon: mdi:microsoft-teams
-  teams_activity:
-    name: Microsoft Teams activity
-    icon: mdi:phone-off
-
 sensor:
   - platform: template
     sensors:
       teams_status: 
-        friendly_name: "Microsoft Teams status"
+        friendly_name: "Microsoft Teams Status"
         value_template: "{{states('input_text.teams_status')}}"
         icon_template: "{{state_attr('input_text.teams_status','icon')}}"
         unique_id: sensor.teams_status
       teams_activity:
-        friendly_name: "Microsoft Teams activity"
+        friendly_name: "Microsoft Teams Activity"
         value_template: "{{states('input_text.teams_activity')}}"
         unique_id: sensor.teams_activity
 
 ```
-* Generate a Long-lived access token ([see HA documentation](https://developers.home-assistant.io/docs/auth_api/#long-lived-access-token))
+* Generate a Long-lived access token. Long-lived access tokens can be created using the "Long-Lived Access Tokens" section at the bottom of a user's Home Assistant profile page. ([see HA documentation](https://developers.home-assistant.io/docs/auth_api/#long-lived-access-token))
 * Copy and temporarily save the token somewhere you can find it later
 * Restart Home Assistant to have the new sensors added
-* Download the files from this repository and save them to C:\Scripts
+* Download the files from this repository and save them to C:\Scripts\TeamsStatus
 * Edit the Settings.ps1 file and:
   * Replace `<Insert token>` with the token you generated
   * Replace `<UserName>` with the username that is logged in to Teams and you want to monitor
   * Replace `<HA URL>` with the URL to your Home Assistant server
+  * Replace `<PCUserName>` with the local user name on the PC.
   * Adjust the language settings to your preferences
-* Start a elevated PowerShell prompt, browse to C:\Scripts and run the following command:
+* Start a elevated PowerShell prompt, browse to C:\Scripts\TeamsStatus and run the following command:
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
 Unblock-File .\Settings.ps1
 Unblock-File .\Get-TeamsStatus.ps1
-Start-Process -FilePath .\nssm.exe -ArgumentList 'install "Microsoft Teams Status Monitor" "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" "-command "& { . C:\Scripts\Get-TeamsStatus.ps1 }"" ' -NoNewWindow -Wait
+Start-Process -FilePath .\nssm.exe -ArgumentList 'install "Microsoft Teams Status Monitor" "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" "-command "& { . C:\Scripts\TeamsStatus\Get-TeamsStatus.ps1 }"" ' -NoNewWindow -Wait
 Start-Service -Name "Microsoft Teams Status Monitor"
 ```
 
