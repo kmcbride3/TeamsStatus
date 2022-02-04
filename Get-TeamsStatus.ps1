@@ -5,10 +5,10 @@
     Requires: PowerShell v2 or higher
     Version History: https://github.com/EBOOZ/TeamsStatus/commits/main
 .SYNOPSIS
-    Sets the status of the Microsoft Teams client to Home Assistant.
+    Sets the status of the Microsoft Teams client to OpenHAB.
 .DESCRIPTION
     This script is monitoring the Teams client logfile for certain changes. It
-    makes use of two sensors that are created in Home Assistant up front.
+    makes use of two sensors that are created in OpenHAB up front.
     The status entity (sensor.teams_status by default) displays that availability 
     status of your Teams client based on the icon overlay in the taskbar on Windows. 
     The activity entity (sensor.teams_activity by default) shows if you
@@ -26,22 +26,19 @@ Param($SetStatus)
 # Import Settings PowerShell script
 . ($PSScriptRoot + "\Settings.ps1")
 
-$headers = @{"Authorization"="Bearer $HAToken";}
+$auth = $OHUser + ':' + $OHPassword
+$Encoded = [System.Text.Encoding]::UTF8.GetBytes($auth)
+$authorizationInfo = [System.Convert]::ToBase64String($Encoded)
+$headers = @{"Authorization"="Basic $($authorizationInfo)"}
 
 # Run the script when a parameter is used and stop when done
 If($null -ne $SetStatus){
     Write-Host ("Setting Microsoft Teams status to "+$SetStatus+":")
-    $params = @{
-     "state"="$SetStatus";
-     "attributes"= @{
-        "friendly_name"="$entityStatusName";
-        "icon"="mdi:microsoft-teams";
-        }
-     }
-	 
-    $params = $params | ConvertTo-Json
-    Invoke-RestMethod -Uri "$HAUrl/api/states/$entityStatus" -Method POST -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($params)) -ContentType "application/json"
-    break
+	$params = (Get-Culture).TextInfo.ToTitleCase($SetStatus)
+        
+	Invoke-RestMethod -Uri "$OHUrl/rest/items/$entityStatus" -Method POST -Headers $headers -Body $params -ContentType "text/plain" 
+
+	break
 }
 
 If ($env:APPDATA -match "C:\\Users") {
@@ -135,14 +132,12 @@ Get-Content -Path $path -Tail 1000 -ReadCount 0 -Encoding Utf8 -Wait | % {
             $TeamsActivity -like "*SfB:TeamsNoCall*" -or `
             $TeamsActivity -like "*name: desktop_call_state_change_send, isOngoing: false*") {
             $Activity = $lgNotInACall
-            $ActivityIcon = $iconNotInACall
             Write-Host $Activity
         }
         ElseIf ($TeamsActivity -like "*Pausing daemon App updates*" -or `
             $TeamsActivity -like "*SfB:TeamsActiveCall*" -or `
             $TeamsActivity -like "*name: desktop_call_state_change_send, isOngoing: true*") {
             $Activity = $lgInACall
-            $ActivityIcon = $iconInACall
             Write-Host $Activity
         }
     }
@@ -150,39 +145,26 @@ Get-Content -Path $path -Tail 1000 -ReadCount 0 -Encoding Utf8 -Wait | % {
     Else {
             $Status = $lgOffline
             $Activity = $lgNotInACall
-            $ActivityIcon = $iconNotInACall
             Write-Host $Status
             Write-Host $Activity
     }
 
-    # Call Home Assistant API to set the status and activity sensors
+    # Call OpenHAB API to set the status and activity sensors
     If ($CurrentStatus -ne $Status -and $Status -ne $null) {
         $CurrentStatus = $Status
 
-        $params = @{
-        "state"="$CurrentStatus";
-        "attributes"= @{
-            "friendly_name"="$entityStatusName";
-            "icon"="mdi:microsoft-teams";
-            }
-        }
+        $params = (Get-Culture).TextInfo.ToTitleCase($Status)
         
-        $params = $params | ConvertTo-Json
-        Invoke-RestMethod -Uri "$HAUrl/api/states/$entityStatus" -Method POST -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($params)) -ContentType "application/json" 
+        Invoke-RestMethod -Uri "$OHUrl/rest/items/$entityStatus" -Method POST -Headers $headers -Body $params -ContentType "text/plain" 
     }
 
     If ($CurrentActivity -ne $Activity) {
         $CurrentActivity = $Activity
 
-        $params = @{
-        "state"="$Activity";
-        "attributes"= @{
-            "friendly_name"="$entityActivityName";
-            "icon"="$ActivityIcon";
-            }
-        }
-        $params = $params | ConvertTo-Json
-        Invoke-RestMethod -Uri "$HAUrl/api/states/$entityActivity" -Method POST -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($params)) -ContentType "application/json" 
-    }
+        $params = (Get-Culture).TextInfo.ToTitleCase($Activity)
+        
+        Invoke-RestMethod -Uri "$OHUrl/rest/items/$entityActivity" -Method POST -Headers $headers -Body $params -ContentType "text/plain" 
+    
+	}
         
 }
