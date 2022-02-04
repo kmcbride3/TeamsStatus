@@ -1,6 +1,6 @@
 # Configure the variables below that will be used in the script
 $OHUser = "<Insert username>" # OpenHAB Cloud Connector User Example: openhab@openhab.org
-$OHPassword = "<Insert token>" # OpenHAB Cloud Connector Password Example: eyJ0eXAiOiJKV1...
+$OHPassword = "<Insert password>" # OpenHAB Cloud Connector Password Example: eyJ0eXAiOiJKV1...
 $UserName = "<Insert Windows UserName>" # Windows User; When not sure, open a command prompt and type: echo %USERNAME%
 $OHUrl = "https://myopenhab.org" # Url to OpenHAB Cloud Connector
 

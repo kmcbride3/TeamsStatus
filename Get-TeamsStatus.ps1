@@ -8,12 +8,11 @@
     Sets the status of the Microsoft Teams client to OpenHAB.
 .DESCRIPTION
     This script is monitoring the Teams client logfile for certain changes. It
-    makes use of two sensors that are created in OpenHAB up front.
-    The status entity (sensor.teams_status by default) displays that availability 
-    status of your Teams client based on the icon overlay in the taskbar on Windows. 
-    The activity entity (sensor.teams_activity by default) shows if you
-    are in a call or not based on the App updates deamon, which is paused as soon as 
-    you join a call.
+    makes use of two items that are created in OpenHAB up front.
+    The Teams_Status item displays that availability status of your Teams client 
+	based on the icon overlay in the taskbar on Windows. 
+    The Teams_Activity item shows if you are in a call or not based on the App 
+	updates deamon, which is paused as soon as you join a call.
 .PARAMETER SetStatus
     Run the script with the SetStatus-parameter to set the status of Microsoft Teams
     directly from the commandline.
@@ -49,7 +48,7 @@ Else {
 }
 
 # Start monitoring the Teams logfile when no parameter is used to run the script
-Get-Content -Path $path -Tail 1000 -ReadCount 0 -Encoding Utf8 -Wait | % {
+Get-Content -Path $path -Tail 5000 -ReadCount 0 -Encoding Utf8 -Wait | % {
     
     # Get Teams Logfile and last icon overlay status
     $TeamsStatus = $_ | Select-String -Pattern `
